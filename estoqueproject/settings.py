@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h==kbx8636+f+fs_(ba21)%*q@khvm@w=b3mc4(9c*tzc47l3y'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'troque-esta-chave')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,14 +74,16 @@ WSGI_APPLICATION = 'estoqueproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# As credenciais do banco vêm de variáveis de ambiente; os valores abaixo
+# são apenas padrões para desenvolvimento local.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'appdjango',
-        'PORT': '3306',
-        'HOST': 'appdjango.cuouo1jdeiwd.us-east-2.rds.amazonaws.com',
-        'USER': 'root',
-        'PASSWORD': '123456789',
+        'NAME': os.environ.get('DB_NAME', 'appdjango'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
     }
 }
 

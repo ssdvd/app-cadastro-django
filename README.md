@@ -52,9 +52,19 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Aponte o bloco `DATABASES` de [`estoqueproject/settings.py`](estoqueproject/settings.py) para o seu banco e então:
+A conexão com o banco e a chave do Django são lidas de variáveis de ambiente:
+
+| Variável | Padrão | Descrição |
+| --- | --- | --- |
+| `DB_HOST` | `localhost` | Endereço do MySQL |
+| `DB_PORT` | `3306` | Porta do MySQL |
+| `DB_NAME` | `appdjango` | Nome do banco |
+| `DB_USER` | `root` | Usuário |
+| `DB_PASSWORD` | vazio | Senha |
+| `DJANGO_SECRET_KEY` | `troque-esta-chave` | Chave secreta do Django; defina uma própria fora do ambiente local |
 
 ```bash
+export DB_HOST=localhost DB_USER=root DB_PASSWORD=SUA_SENHA
 python manage.py migrate
 python manage.py runserver
 ```
@@ -65,12 +75,14 @@ Acesse <http://localhost:8000>.
 
 ```bash
 docker build -t app-cadastro-django .
-docker run -p 8000:8000 app-cadastro-django
+docker run -p 8000:8000 \
+  -e DB_HOST=SEU_HOST -e DB_USER=SEU_USUARIO -e DB_PASSWORD=SUA_SENHA \
+  app-cadastro-django
 ```
 
 ### Em uma instância EC2 com Ansible
 
-O [`playbook.yml`](playbook.yml) instala as dependências, clona o repositório e inicia o servidor. Coloque o IP da instância em [`host.yml`](host.yml) e rode:
+O [`playbook.yml`](playbook.yml) instala as dependências, clona o repositório e inicia o servidor. As variáveis do banco precisam estar definidas na instância. Coloque o IP da instância em [`host.yml`](host.yml) e rode:
 
 ```bash
 ansible-playbook -i host.yml -u ubuntu --private-key SUA_CHAVE.pem playbook.yml
